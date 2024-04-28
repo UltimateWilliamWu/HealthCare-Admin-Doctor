@@ -1,5 +1,5 @@
 <p align="center">
-	<img alt="logo" src="https://github.com/UltimateWilliamWu/HealthCare-Admin-Doctor/blob/2c2282dba5f7766eea96269dfefd163c996d5cfe/ruoyi-ui/src/assets/logo/logo.png">
+	<img alt="logo" src="https://github.com/UltimateWilliamWu/HealthCare-Admin-Doctor/blob/2c2282dba5f7766eea96269dfefd163c996d5cfe/ruoyi-ui/src/assets/logo/logo.png" width="200px" height="200px">
 </p>
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">OSH-HealthCare v1.0.0</h1>
 <h4 align="center">基于Java若依快速开发框架的只能医疗健康系统（毕业设计）</h4>
