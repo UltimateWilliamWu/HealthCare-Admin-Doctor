@@ -4,7 +4,7 @@
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">OSH-HealthCare v1.0.0</h1>
 <h4 align="center">基于Java若依快速开发框架的只能医疗健康系统（毕业设计）</h4>
 <p align="center">
-	<a href="https://gitee.com/y_project/RuoYi-Vue/blob/master/LICENSE"><img src="https://img.shields.io/github/license/mashape/apistatus.svg"></a>
+    大学时期的毕业设计，水平有限，简单实现健康医疗系统
 </p>
 
 ## 平台简介
