@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WardMapper">
+    
+    <resultMap type="Ward" id="WardResult">
+        <result property="id"    column="id"    />
+        <result property="building"    column="building"    />
+        <result property="bed"    column="bed"    />
+        <result property="level"    column="level"    />
+        <result property="status"    column="status"    />
+        <result property="note"    column="note"    />
+    </resultMap>
+
+    <sql id="selectWardVo">
+        select id, building, bed, level, status, note from ward
+    </sql>
+
+    <select id="selectWardList" parameterType="Ward" resultMap="WardResult">
+        <include refid="selectWardVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+            <if test="building != null  and building != ''"> and building = #{building}</if>
+            <if test="bed != null  and bed != ''"> and bed = #{bed}</if>
+            <if test="level != null  and level != ''"> and level = #{level}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="note != null  and note != ''"> and note = #{note}</if>
+        </where>
+    </select>
+    
+    <select id="selectWardById" parameterType="Integer" resultMap="WardResult">
+        <include refid="selectWardVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertWard" parameterType="Ward" useGeneratedKeys="true" keyProperty="id">
+        insert into ward
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="building != null">building,</if>
+            <if test="bed != null">bed,</if>
+            <if test="level != null">level,</if>
+            <if test="status != null">status,</if>
+            <if test="note != null">note,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="building != null">#{building},</if>
+            <if test="bed != null">#{bed},</if>
+            <if test="level != null">#{level},</if>
+            <if test="status != null">#{status},</if>
+            <if test="note != null">#{note},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWard" parameterType="Ward">
+        update ward
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="building != null">building = #{building},</if>
+            <if test="bed != null">bed = #{bed},</if>
+            <if test="level != null">level = #{level},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="note != null">note = #{note},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWardById" parameterType="Integer">
+        delete from ward where id = #{id}
+    </delete>
+
+    <delete id="deleteWardByIds" parameterType="String">
+        delete from ward where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

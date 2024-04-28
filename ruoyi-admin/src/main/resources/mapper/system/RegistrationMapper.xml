@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.RegistrationMapper">
+
+    <resultMap type="Registration" id="RegistrationResult">
+        <result property="id"    column="id"    />
+        <result property="patientid"    column="patientid"    />
+        <result property="patientname"    column="patientname"    />
+        <result property="fee"    column="fee"    />
+        <result property="patientsex"    column="patientsex"    />
+        <result property="departmentid"    column="departmentid"    />
+        <result property="doctorid"    column="doctorid"    />
+        <result property="date"    column="date"    />
+        <result property="time"    column="time"    />
+        <result property="message"    column="message"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+
+    <sql id="selectRegistrationVo">
+        select id, patientid, patientname, fee, patientsex, departmentid, doctorid, date, time, message, del_flag from registration
+    </sql>
+
+    <select id="selectRegistrationList" parameterType="Registration" resultMap="RegistrationResult">
+        <include refid="selectRegistrationVo"/>
+        <where>
+                del_flag='0'
+            <if test="patientid != null  and patientid != ''"> and patientid = #{patientid}</if>
+            <if test="patientname != null  and patientname != ''"> and patientname like concat('%', #{patientname}, '%')</if>
+            <if test="fee != null "> and fee = #{fee}</if>
+            <if test="patientsex != null  and patientsex != ''"> and patientsex = #{patientsex}</if>
+            <if test="date != null  and date != ''"> and date = #{date}</if>
+            <if test="time != null  and time != ''"> and time = #{time}</if>
+            <if test="message != null  and message != ''"> and message = #{message}</if>
+        </where>
+    </select>
+
+    <select id="selectRegistrationById" parameterType="Long" resultMap="RegistrationResult">
+        <include refid="selectRegistrationVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertRegistration" parameterType="Registration" useGeneratedKeys="true" keyProperty="id">
+        insert into registration
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="patientid != null">patientid,</if>
+            <if test="patientname != null">patientname,</if>
+            <if test="fee != null">fee,</if>
+            <if test="patientsex != null">patientsex,</if>
+            <if test="departmentid != null">departmentid,</if>
+            <if test="doctorid != null">doctorid,</if>
+            <if test="date != null">date,</if>
+            <if test="time != null">time,</if>
+            <if test="message != null">message,</if>
+            <if test="delFlag != null">del_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="patientid != null">#{patientid},</if>
+            <if test="patientname != null">#{patientname},</if>
+            <if test="fee != null">#{fee},</if>
+            <if test="patientsex != null">#{patientsex},</if>
+            <if test="departmentid != null">#{departmentid},</if>
+            <if test="doctorid != null">#{doctorid},</if>
+            <if test="date != null">#{date},</if>
+            <if test="time != null">#{time},</if>
+            <if test="message != null">#{message},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRegistration" parameterType="Registration">
+        update registration
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="patientid != null">patientid = #{patientid},</if>
+            <if test="patientname != null">patientname = #{patientname},</if>
+            <if test="fee != null">fee = #{fee},</if>
+            <if test="patientsex != null">patientsex = #{patientsex},</if>
+            <if test="departmentid != null">departmentid = #{departmentid},</if>
+            <if test="doctorid != null">doctorid = #{doctorid},</if>
+            <if test="date != null">date = #{date},</if>
+            <if test="time != null">time = #{time},</if>
+            <if test="message != null">message = #{message},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRegistrationById" parameterType="Long">
+        delete from registration where id = #{id}
+    </delete>
+
+    <delete id="deleteRegistrationByIds" parameterType="String">
+        delete from registration where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

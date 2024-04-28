@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MedicineMapper">
+
+    <resultMap type="Medicine" id="MedicineResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="manufacturer"    column="manufacturer"    />
+        <result property="price"    column="price"    />
+        <result property="quantity"    column="quantity"    />
+        <result property="dosage"    column="dosage"    />
+        <result property="unit"    column="unit"    />
+        <result property="specification"    column="specification"    />
+        <result property="productiondate"    column="productiondate"    />
+        <result property="dateofuse"    column="dateofuse"    />
+    </resultMap>
+
+    <sql id="selectMedicineVo">
+        select id, name, manufacturer, price, quantity, dosage, unit, specification, productiondate, dateofuse from medicine
+    </sql>
+
+    <select id="selectMedicineList" parameterType="Medicine" resultMap="MedicineResult">
+        <include refid="selectMedicineVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="manufacturer != null  and manufacturer != ''"> and manufacturer like concat('%', #{manufacturer}, '%')</if>
+            <if test="price != null "> and price = #{price}</if>
+            <if test="quantity != null "> and quantity = #{quantity}</if>
+            <if test="dosage != null  and dosage != ''"> and dosage = #{dosage}</if>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="specification != null  and specification != ''"> and specification = #{specification}</if>
+            <if test="productiondate != null  and productiondate != ''"> and productiondate = #{productiondate}</if>
+            <if test="dateofuse != null  and dateofuse != ''"> and dateofuse = #{dateofuse}</if>
+        </where>
+    </select>
+
+    <select id="selectMedicineById" parameterType="Integer" resultMap="MedicineResult">
+        <include refid="selectMedicineVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertMedicine" parameterType="Medicine" useGeneratedKeys="true" keyProperty="id">
+        {call healthcare_system.insert_or_update_medicine
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="manufacturer != null">#{manufacturer},</if>
+            <if test="price != null">#{price},</if>
+            <if test="quantity != null">#{quantity},</if>
+            <if test="dosage != null">#{dosage},</if>
+            <if test="unit != null">#{unit},</if>
+            <if test="specification != null">#{specification},</if>
+            <if test="productiondate != null">#{productiondate},</if>
+            <if test="dateofuse != null">#{dateofuse},</if>
+         </trim>
+        }
+    </insert>
+
+    <update id="updateMedicine" parameterType="Medicine">
+        update medicine
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="manufacturer != null">manufacturer = #{manufacturer},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="quantity != null">quantity = #{quantity},</if>
+            <if test="dosage != null">dosage = #{dosage},</if>
+            <if test="unit != null">unit = #{unit},</if>
+            <if test="specification != null">specification = #{specification},</if>
+            <if test="productiondate != null">productiondate = #{productiondate},</if>
+            <if test="dateofuse != null">dateofuse = #{dateofuse},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMedicineById" parameterType="Integer">
+        delete from medicine where id = #{id}
+    </delete>
+
+    <delete id="deleteMedicineByIds" parameterType="String">
+        delete from medicine where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="outboundMedicine" parameterType="Medicine">
+        {call healthcare_system.outbound_medicine
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="manufacturer != null">#{manufacturer},</if>
+            <if test="price != null">#{price},</if>
+            <if test="quantity != null">#{quantity},</if>
+            <if test="dosage != null">#{dosage},</if>
+            <if test="unit != null">#{unit},</if>
+            <if test="specification != null">#{specification},</if>
+            <if test="productiondate != null">#{productiondate},</if>
+            <if test="dateofuse != null">#{dateofuse},</if>
+        </trim>
+        }
+    </delete>
+
+</mapper>

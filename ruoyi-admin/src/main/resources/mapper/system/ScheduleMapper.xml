@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ScheduleMapper">
+    
+    <resultMap type="Schedule" id="ScheduleResult">
+        <result property="id"    column="id"    />
+        <result property="date"    column="date"    />
+        <result property="shifts"    column="shifts"    />
+        <result property="category"    column="category"    />
+        <result property="begin"    column="begin"    />
+        <result property="end"    column="end"    />
+    </resultMap>
+
+    <sql id="selectScheduleVo">
+        select id, date, shifts, category, begin, end from schedule
+    </sql>
+
+    <select id="selectScheduleList" parameterType="Schedule" resultMap="ScheduleResult">
+        <include refid="selectScheduleVo"/>
+        <where>  
+            <if test="date != null  and date != ''"> and date = #{date}</if>
+            <if test="shifts != null  and shifts != ''"> and shifts = #{shifts}</if>
+            <if test="category != null  and category != ''"> and category = #{category}</if>
+            <if test="begin != null  and begin != ''"> and begin = #{begin}</if>
+            <if test="end != null  and end != ''"> and end = #{end}</if>
+        </where>
+    </select>
+    
+    <select id="selectScheduleById" parameterType="String" resultMap="ScheduleResult">
+        <include refid="selectScheduleVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSchedule" parameterType="Schedule">
+        insert into schedule
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="date != null">date,</if>
+            <if test="shifts != null">shifts,</if>
+            <if test="category != null">category,</if>
+            <if test="begin != null">begin,</if>
+            <if test="end != null">end,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="date != null">#{date},</if>
+            <if test="shifts != null">#{shifts},</if>
+            <if test="category != null">#{category},</if>
+            <if test="begin != null">#{begin},</if>
+            <if test="end != null">#{end},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSchedule" parameterType="Schedule">
+        update schedule
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="date != null">date = #{date},</if>
+            <if test="shifts != null">shifts = #{shifts},</if>
+            <if test="category != null">category = #{category},</if>
+            <if test="begin != null">begin = #{begin},</if>
+            <if test="end != null">end = #{end},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteScheduleById" parameterType="String">
+        delete from schedule where id = #{id}
+    </delete>
+
+    <delete id="deleteScheduleByIds" parameterType="String">
+        delete from schedule where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

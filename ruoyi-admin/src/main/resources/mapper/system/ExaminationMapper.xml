@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ExaminationMapper">
+    
+    <resultMap type="Examination" id="ExaminationResult">
+        <result property="id"    column="id"    />
+        <result property="department"    column="department"    />
+        <result property="name"    column="name"    />
+        <result property="content"    column="content"    />
+        <result property="price"    column="price"    />
+    </resultMap>
+
+    <sql id="selectExaminationVo">
+        select id, department, name, content, price from examination
+    </sql>
+
+    <select id="selectExaminationList" parameterType="Examination" resultMap="ExaminationResult">
+        <include refid="selectExaminationVo"/>
+        <where>  
+            <if test="department != null  and department != ''"> and department = #{department}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="price != null "> and price = #{price}</if>
+        </where>
+    </select>
+    
+    <select id="selectExaminationById" parameterType="Long" resultMap="ExaminationResult">
+        <include refid="selectExaminationVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertExamination" parameterType="Examination" useGeneratedKeys="true" keyProperty="id">
+        insert into examination
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="department != null">department,</if>
+            <if test="name != null">name,</if>
+            <if test="content != null">content,</if>
+            <if test="price != null">price,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="department != null">#{department},</if>
+            <if test="name != null">#{name},</if>
+            <if test="content != null">#{content},</if>
+            <if test="price != null">#{price},</if>
+         </trim>
+    </insert>
+
+    <update id="updateExamination" parameterType="Examination">
+        update examination
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="department != null">department = #{department},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="price != null">price = #{price},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteExaminationById" parameterType="Long">
+        delete from examination where id = #{id}
+    </delete>
+
+    <delete id="deleteExaminationByIds" parameterType="String">
+        delete from examination where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
