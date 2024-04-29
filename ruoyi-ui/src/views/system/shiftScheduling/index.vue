@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="app-container" style="margin-right: 5%;margin-top: 1%">
     <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="100px">
       <el-form-item label="日期范围" prop="Date">
         <el-date-picker type="daterange" v-model="formData.Date" format="yyyy-MM-dd"
@@ -12,15 +12,32 @@
         </el-checkbox-group>
       </el-form-item>
       <el-form-item size="large">
-        <el-button type="primary" @click="submitForm">提交</el-button>
+        <el-button type="primary" @click="submitForm" style="margin-left: 40%">生成排班</el-button>
         <el-button @click="resetForm">重置</el-button>
       </el-form-item>
+
+      <el-form-item ref="data">
+        <!-- 解析出来的数据 -->
+        <el-table :data="tableData">
+          <el-table-column prop="date" label="日期" > </el-table-column>
+          <el-table-column prop="shifts" label="班次" > </el-table-column>
+          <el-table-column prop="category" label="医生" > </el-table-column>
+          <el-table-column prop="begin" label="开始时间" > </el-table-column>
+          <el-table-column prop="end" label="结束时间"> </el-table-column>
+        </el-table>
+      </el-form-item>
+      <el-form-item size="large">
+        <el-button type="primary" @click="add" style="margin-left: 45%">确认导入</el-button>
+      </el-form-item>
+
     </el-form>
   </div>
 </template>
 <script>
-import {autoSchedule, getSchedule} from "@/api/system/schedule";
+import {autoSchedule} from "@/api/system/schedule";
 import {listDoctor} from "@/api/system/user";
+import {addSchedulingFile} from "@/api/system/scheduling";
+import {EventBus} from "@/api/system/EventBus";
 // 获取日期范围内所有的日期
 function getDates(startDate, endDate) {
   const dates = [];
@@ -38,6 +55,7 @@ export default {
   props: [],
   data() {
     return {
+      tableData:[],
       formData: {
         Date: null,
         Doctor: [],
@@ -79,6 +97,12 @@ export default {
   mounted() {
   },
   methods: {
+    add(){
+      addSchedulingFile(this.tableData).then(response=>{
+        EventBus.$emit('update-schedule');
+      })
+      this.$modal.msgSuccess("导入成功");
+    },
     submitForm() {
       this.$refs['elForm'].validate(valid => {
         if (!valid) return;
@@ -86,12 +110,20 @@ export default {
         const startDate = this.formData.Date[0];
         const endDate = this.formData.Date[1];
         this.formData.Date=getDates(startDate, endDate);
-        console.log(this.formData.Date)
-        autoSchedule(this.formData);
+        autoSchedule(this.formData)
+          .then(response=>{
+            // 处理成功响应
+            this.tableData = response;
+            console.log(response.data);
+        })
+          .catch(error=>{
+            console.error('Error fetching Schedule list:', error);
+          });
       })
     },
     resetForm() {
       this.$refs['elForm'].resetFields()
+      this.$refs['data'].resetFields()
     },
   }
 }

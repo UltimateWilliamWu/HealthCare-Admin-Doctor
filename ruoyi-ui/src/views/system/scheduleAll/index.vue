@@ -120,7 +120,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -158,6 +158,8 @@
 
 <script>
 import { listScheduleAll, getScheduleAll, delScheduleAll, addScheduleAll, updateScheduleAll } from "@/api/system/scheduleAll";
+import {EventBus} from "@/api/system/EventBus";
+import {listMedicine} from "@/api/system/medicine";
 
 export default {
   name: "ScheduleAll",
@@ -199,6 +201,13 @@ export default {
     };
   },
   created() {
+    EventBus.$on('update-schedule', () => {
+      // 在事件发生时从数据库获取新数据，并更新组件的数据
+      listScheduleAll(this.queryParams).then(response => {
+        this.scheduleAllList = response.rows;
+        this.total = response.total;
+      });
+    });
     this.getList();
   },
   methods: {

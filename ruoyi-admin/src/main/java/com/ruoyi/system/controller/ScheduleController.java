@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.alibaba.fastjson2.JSONObject;
 import com.google.ortools.Loader;
 import com.google.ortools.sat.*;
+import com.ruoyi.system.domain.Medicine;
 import org.aspectj.weaver.loadtime.Aj;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -153,12 +155,14 @@ public class ScheduleController extends BaseController
      *  每位护士每天最多工作一次。（硬性约束条件）
      *  尽可能均分班次（软性约束条件）
     */
-    @PostMapping("/automaticScheduling")
-    public void automaticScheduling(@RequestBody Map<String, Object> requestData){
+    @RequestMapping("/automaticScheduling")
+    public ResponseEntity<List<Schedule>> automaticScheduling(@RequestBody Map<String, Object> requestData){
         List<String> date = (List<String>) requestData.get("Date");
         System.out.println(date);
         List<String> doctors = (List<String>) requestData.get("Doctor");
         System.out.println(doctors);
+
+        List<Schedule> scheduleList = new ArrayList<>();;
 
         Loader.loadNativeLibraries();
         final int numNurses = doctors.size();
@@ -231,8 +235,8 @@ public class ScheduleController extends BaseController
         // Tell the solver to enumerate all solutions.
         solver.getParameters().setEnumerateAllSolutions(true);
 
-        // Display the first five solutions.
-        final int solutionLimit = 5;
+        // Display the first five solutions.给出的解决方案个数
+        final int solutionLimit = 1;
         class VarArraySolutionPrinterWithLimit extends CpSolverSolutionCallback {
             public VarArraySolutionPrinterWithLimit(
                     int[] allNurses, int[] allDays, int[] allShifts, Literal[][][] shifts, int limit) {
@@ -254,6 +258,28 @@ public class ScheduleController extends BaseController
                         for (int s : allShifts) {
                             if (booleanValue(shifts[n][d][s])) {
                                 isWorking = true;
+                                Schedule schedule=new Schedule();//创建排班对象
+                                schedule.setDate(date.get(d));//设置排班日期
+                                schedule.setCategory(doctors.get(n));//设置医生
+                                //设置班次
+                                switch (s){
+                                    case 0:
+                                        schedule.setShifts("早");
+                                        schedule.setBegin(date.get(d)+" 00:00");
+                                        schedule.setEnd(date.get(d)+" 08:00");
+                                        break;
+                                    case 1:
+                                        schedule.setShifts("中");
+                                        schedule.setBegin(date.get(d)+" 08:00");
+                                        schedule.setEnd(date.get(d)+" 16:00");
+                                        break;
+                                    case 2:
+                                        schedule.setShifts("晚");
+                                        schedule.setBegin(date.get(d)+" 16:00");
+                                        schedule.setEnd(date.get(d)+" 24:00");
+                                        break;
+                                }
+                                scheduleList.add(schedule);
                                 System.out.printf("  Doctor %s work shift %d%n", doctors.get(n), s);
                             }
                         }
@@ -295,6 +321,16 @@ public class ScheduleController extends BaseController
         System.out.printf("  branches : %d%n", solver.numBranches());
         System.out.printf("  wall time: %f s%n", solver.wallTime());
 
+        System.out.println(scheduleList.get(0));
+        return ResponseEntity.ok(scheduleList);
+    }
+
+    @RequestMapping("/addScheduling")
+    public AjaxResult inboundsScheduling(@RequestBody List<Schedule> schedules) {
+        for (Schedule schedule : schedules) {
+            scheduleService.insertSchedule(schedule);
+        }
+        return AjaxResult.success("导入成功！");
     }
 
     /**

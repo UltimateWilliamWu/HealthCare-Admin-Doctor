@@ -206,6 +206,7 @@
 
 <script>
 import { listMedicine, getMedicine, delMedicine, addMedicine, updateMedicine } from "@/api/system/medicine";
+import {EventBus} from "@/api/system/EventBus";
 
 export default {
   name: "Medicine",
@@ -251,6 +252,13 @@ export default {
     };
   },
   created() {
+    EventBus.$on('update-data', () => {
+      // 在事件发生时从数据库获取新数据，并更新组件的数据
+      listMedicine(this.queryParams).then(response => {
+        this.medicineList = response.rows;
+        this.total = response.total;
+      });
+    });
     this.getList();
   },
   methods: {

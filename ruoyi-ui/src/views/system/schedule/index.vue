@@ -82,9 +82,9 @@
               <p></p>
               <span>班次：</span>
               <el-radio-group v-model="data.shiftName">
-                <el-radio label="早">8:00-12:00</el-radio>
-                <el-radio label="中">14:00-18:00</el-radio>
-                <el-radio label="晚">19:00-23:00</el-radio>
+                <el-radio label="早">00:00-08:00</el-radio>
+                <el-radio label="中">08:00-16:00</el-radio>
+                <el-radio label="晚">16:00-24:00</el-radio>
               </el-radio-group>
               <p></p>
               <span>班别：</span>
@@ -117,9 +117,9 @@
               <el-form :model="addForm">
                 <el-form-item label="班次：" label-width="80px">
                   <el-radio-group v-model="addForm.shiftName">
-                    <el-radio label="早">8:00-12:00</el-radio>
-                    <el-radio label="中">14:00-18:00</el-radio>
-                    <el-radio label="晚">19:00-23:00</el-radio>
+                    <el-radio label="早">00:00-08:00</el-radio>
+                    <el-radio label="中">08:00-16:00</el-radio>
+                    <el-radio label="晚">16:00-24:00</el-radio>
                   </el-radio-group>
                 </el-form-item>
                 <el-form-item label="班别：" label-width="80px">
@@ -200,6 +200,8 @@ import {addBatchSchedule, addSchedule, getSchedule} from "@/api/system/schedule"
 import Vue from 'vue'
 import Router from 'vue-router'
 import {delScheduleAll, listScheduleAll} from "@/api/system/scheduleAll";
+import {EventBus} from "@/api/system/EventBus";
+import {listMedicine} from "@/api/system/medicine";
 
 export default {
   data() {
@@ -380,20 +382,20 @@ export default {
       let startTime,endTime;
       switch (this.addForm.shiftName){
         case "早":
-          startTime=this.hanleDay.day + " 08:00";
-          endTime=this.hanleDay.day + " 12:00";
+          startTime=this.hanleDay.day +" 00:00";
+          endTime=this.hanleDay.day +" 08:00";
           break;
         case "中":
-          startTime=this.hanleDay.day + " 14:00";
-          endTime=this.hanleDay.day + " 18:00";
+          startTime=this.hanleDay.day +" 08:00";
+          endTime=this.hanleDay.day +" 16:00";
           break;
         case "晚":
-          startTime=this.hanleDay.day + " 19:00";
-          endTime=this.hanleDay.day + " 23:00";
+          startTime=this.hanleDay.day +" 16:00";
+          endTime=this.hanleDay.day +" 24:00";
           break;
       }
       let info = {
-        ruleName: "三班两运转",
+        ruleName: "四班三转",
         shiftName: this.addForm.shiftName,
         groupName: this.addForm.groupName,
         category: this.addForm.groupName,
@@ -443,6 +445,21 @@ export default {
     },
     // 批量添加排班数据
     batchAddWork() {
+      let startTime,endTime;
+      switch (this.batchAddForm.classData[0].shiftName){
+        case "早":
+          startTime=this.hanleDay.day +" 00:00";
+          endTime=this.hanleDay.day +" 08:00";
+          break;
+        case "中":
+          startTime=this.hanleDay.day +" 08:00";
+          endTime=this.hanleDay.day +" 16:00";
+          break;
+        case "晚":
+          startTime=this.hanleDay.day +" 16:00";
+          endTime=this.hanleDay.day +" 24:00";
+          break;
+      }
       let dateList = this.batchAddForm.batchDate;
       let classList = this.batchAddForm.classData;
       let list = [];
@@ -453,11 +470,11 @@ export default {
         let workList = [];
         classList.forEach((work) => {
           let info = {
-            ruleName: "三班两运转",
+            ruleName: "四班三转",
             shiftName: work.shiftName,
             groupName: work.groupName,
-            startTime: item + " 08:30",
-            endTime: item + " 20:30",
+            startTime: startTime,
+            endTime: endTime,
             category: work.groupName,
             isNotHoliday: 0,
             classId: 1,

@@ -26,31 +26,6 @@
         </el-table>
       </el-form-item>
     </el-form>
-    <!--    <div class="app-container">
-          <el-form>
-            <el-form-item>
-              <el-upload action="#" :before-upload="beforeUpload" :show-file-list="false" accept=".xlsx, .xls">
-                <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-              </el-upload>
-            </el-form-item>
-            <el-form-item>
-              &lt;!&ndash; 解析出来的数据 &ndash;&gt;
-              <el-table :data="tableData">
-                <el-table-column prop="id" label="药品编号"> </el-table-column>
-                <el-table-column prop="name" label="药品名"> </el-table-column>
-                <el-table-column prop="manufacture" label="制造商"> </el-table-column>
-                <el-table-column prop="price" label="价格"> </el-table-column>
-                <el-table-column prop="quantity" label="数量"> </el-table-column>
-                <el-table-column prop="dosage" label="剂量"> </el-table-column>
-                <el-table-column prop="unit" label="单位"> </el-table-column>
-                <el-table-column prop="specification" label="规格"> </el-table-column>
-                <el-table-column prop="productiondate" label="生产日期"> </el-table-column>
-                <el-table-column prop="dateofuse" label="保质期"> </el-table-column>
-              </el-table>
-            </el-form-item>
-          </el-form>
-
-        </div>-->
   </div>
 </template>
 
@@ -58,6 +33,8 @@
 import * as XLSX from 'xlsx'
 import axios from "axios";
 import {outboundMedicineFile} from "@/api/system/outbound";
+import { EventBus} from "@/api/system/EventBus";
+
 export default {
   name: 'importExcel',
   data () {
@@ -110,7 +87,8 @@ export default {
     },
     submitForm() {
       outboundMedicineFile(this.tableData);
-      location.reload();
+      EventBus.$emit('update-data');
+      // this.$router.go(0);
       this.$modal.msgSuccess("导入成功");
       this.tableData = null;
     }
