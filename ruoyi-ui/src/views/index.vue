@@ -399,7 +399,7 @@ export default {
     const categories = (function () {
       let now = new Date();
       let res = [];
-      let len = 8;
+      let len = 5;
       while (len--) {
         res.unshift(now.toLocaleTimeString().replace(/^\D*/, ''));
         now = new Date(+now - 2000);
@@ -408,7 +408,7 @@ export default {
     })();
     const categories2 = (function () {
       let res = [];
-      let len = 8;
+      let len = 5;
       while (len--) {
         res.push(10 - len - 1);
       }
@@ -478,7 +478,7 @@ export default {
           name: '人数',
           max: 30,
           min: 0,
-          boundaryGap: [0.5, 0.5]
+          boundaryGap: [0.2, 0.2]
         },
         {
           interval:100,
@@ -487,7 +487,7 @@ export default {
           name: '人数',
           max: 300,
           min: 0,
-          boundaryGap: [0.5, 0.5]
+          boundaryGap: [0.2, 0.2]
         }
       ],
       series: [

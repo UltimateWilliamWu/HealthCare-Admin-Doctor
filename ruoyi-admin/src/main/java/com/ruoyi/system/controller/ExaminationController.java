@@ -23,9 +23,9 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 检查费设置Controller
- * 
+ *
  * @author William Wu
- * @date 2024-04-24
+ * &#064;date  2024-04-24
  */
 @RestController
 @RequestMapping("/system/examination")

@@ -24,4 +24,11 @@ export function getSchedule(query) {
   })
 }
 
+export function autoSchedule(data){
+  return request({
+    url:'system/scheduleAll/automaticScheduling',
+    method:'post',
+    data: data,
+  })
+}
 

@@ -172,6 +172,13 @@
                 <version>${ruoyi.version}</version>
             </dependency>
 
+            <!--Google or Tools 算法工具 -->
+            <dependency>
+                <groupId>com.google.ortools</groupId>
+                <artifactId>ortools-java</artifactId>
+                <version>9.9.3963</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

@@ -23,9 +23,9 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 库存管理Controller
- * 
+ *
  * @author William Wu
- * @date 2024-04-20
+ * &#064;date  2024-04-20
  */
 @RestController
 @RequestMapping("/system/medicine")

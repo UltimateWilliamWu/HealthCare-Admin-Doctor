@@ -25,7 +25,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * 问诊Controller
  *
  * @author WilliamWu
- * @date 2024-04-24
+ * &#064;date  2024-04-24
  */
 @RestController
 @RequestMapping("/system/registration")
