@@ -17,6 +17,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="dateofuse"    column="dateofuse"    />
     </resultMap>
 
+    <select id="selectMedicineByDept" parameterType="String" resultMap="MedicineResult">
+        select name,price,dosage from medicine where unit=#{unit}
+    </select>
+
     <sql id="selectMedicineVo">
         select id, name, manufacturer, price, quantity, dosage, unit, specification, productiondate, dateofuse from medicine
     </sql>

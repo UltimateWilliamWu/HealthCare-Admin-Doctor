@@ -146,35 +146,45 @@
     />
 
     <!-- 添加或修改问诊对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="700px" append-to-body>
+      <!-- 添加药品和检查费 -->
+      <el-form v-for="(RuleForm,index) in ruleForm" :key="RuleForm.id" :rules="rules" ref="ruleForm" label-width="100px" v-model="ruleForm" class="demo-ruleForm">
+        <el-row type="flex" justify="start" align="top" :gutter="parseInt('15')">
+          <el-form-item label="收费项目" prop="charge">
+            <el-cascader v-model="RuleForm.charge" :options="chargeOptions" :props="chargeProps" @change="handleChange(index,$event)"
+                         :style="{width: '100%'}" placeholder="请选择收费项目" clearable></el-cascader>
+          </el-form-item>
+          <el-form-item label="数量" prop="quantity">
+            <el-input-number v-model="RuleForm.quantity" placeholder="数量" :min="1"  @change="handleQuantity(index,$event)"></el-input-number>
+          </el-form-item>
+        </el-row>
+        <el-row type="flex" justify="start" align="top" :gutter="parseInt('15')">
+          <el-form-item label="单价" property="fee" >
+            <el-input v-model="RuleForm.fee" placeholder="请输入单价" clearable :style="{width: '100%'}" @change="handlePrice(index,$event)">
+            </el-input>
+          </el-form-item>
+          <el-form-item label="项目总价" prop="ratio">
+            <el-input v-model="RuleForm.ratio" placeholder="请输入项目总价" clearable :style="{width: '100%'}">
+            </el-input>
+          </el-form-item>
+        </el-row>
+        <el-divider></el-divider>
+      </el-form>
+
+      <el-form>
+        <el-form-item label-width="100px">
+          <el-button @click="resetForm()" type="danger">重置</el-button>
+          <el-button @click="add">+</el-button>
+          <el-button @click="reduce" :disabled="flag">-</el-button>
+        </el-form-item>
+      </el-form>
+      <!-- 诊断框 -->
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-<!--        <el-form-item label="医保卡号" prop="patientid">
-          <el-input v-model="form.patientid" placeholder="请输入医保卡号" disabled/>
-        </el-form-item>
-        <el-form-item label="患者姓名" prop="patientname">
-          <el-input v-model="form.patientname" placeholder="请输入患者姓名" disabled/>
-        </el-form-item>
-        <el-form-item label="挂号费" prop="fee">
-          <el-input v-model="form.fee" placeholder="请输入挂号费" disabled/>
-        </el-form-item>
-        <el-form-item label="性别" prop="patientsex">
-          <el-select v-model="form.patientsex" placeholder="请选择性别" disabled>
-            <el-option
-              v-for="dict in dict.type.sys_user_sex"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="日期" prop="date" >
-          <el-input v-model="form.date" placeholder="请输入日期" disabled/>
-        </el-form-item>
-        <el-form-item label="时间" prop="time" >
-          <el-input v-model="form.time" placeholder="请输入时间" disabled/>
-        </el-form-item>-->
         <el-form-item label="诊断">
           <editor v-model="form.message" :min-height="192"/>
+        </el-form-item>
+        <el-form-item label="总价" prop="all">
+          <el-input v-model="form.all" placeholder="请输入总价" clearable :style="{width: '100%'}"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -186,13 +196,56 @@
 </template>
 
 <script>
-import { listRegistration, getRegistration, delRegistration, addRegistration, updateRegistration } from "@/api/system/registration";
+import {
+  listRegistration,
+  getRegistration,
+  delRegistration,
+  addRegistration,
+  updateRegistration,
+  chargeOptions
+} from "@/api/system/registration";
+import index from "vuex";
 
 export default {
   name: "Registration",
   dicts: ['sys_user_sex'],
   data() {
     return {
+      rules: {
+        /*charge: [{
+          required: true,
+          type: 'array',
+          message: '请至少选择一个收费项目',
+          trigger: 'change'
+        }],*/
+        quantity: [{
+          required: true,
+          message: '数量',
+          trigger: 'blur'
+        }],
+        fee: [],
+        ratio: [],
+        all: [{
+          required: true,
+          message: '请输入总计',
+          trigger: 'blur'
+        }],
+      },
+      chargeOptions: [],
+      chargeProps: {
+        "multiple": false
+      },
+      //问诊表达信息
+      ruleForm: [{
+        charge: "",
+        quantity: 0,
+        fee: "",
+        ratio: "",
+        all: "",
+        id:0,
+      }],
+      flag: true,
+
       // 遮罩层
       loading: true,
       // 选中数组
@@ -226,14 +279,58 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {
-      }
     };
   },
   created() {
     this.getList();
+    chargeOptions().then(response=>{
+      this.chargeOptions = response;
+    })
   },
   methods: {
+    handlePrice(index,value){
+      this.ruleForm[index].ratio=this.ruleForm[index].quantity*value;
+    },
+    handleQuantity(index,value){
+      this.ruleForm[index].ratio=this.ruleForm[index].fee*value;
+    },
+    handleChange(index,value) {
+      // value 是一个数组，包含了选中的值
+      this.ruleForm[index].fee=value[2];
+      this.ruleForm[index].ratio=this.ruleForm[index].quantity*value[2];
+      // 如果你需要将选中的值传递给后端，可以在这里调用相关方法
+    },
+    // 表单添加一行
+    add() {
+      var arr = {
+        charge: "",
+        quantity: 0,
+        fee: "",
+        ratio: "",
+        all: "",
+        id:"", }
+      this.ruleForm.push(arr)
+      this.flags()
+    },
+    // 表单减少一行
+    reduce() {
+      this.ruleForm.length = this.ruleForm.length - 1
+      this.flags()
+    },
+    // 判断数组长度
+    flags() {
+      if (this.ruleForm.length < 2) {
+        this.flag = true
+      } else {
+        //先赋值为true再赋为false, 不然会没反应
+        this.flag = true
+        this.flag = false
+      }
+    },
+    // 重置方法
+    resetForm() {
+      this.ruleForm = [{}]
+    },
     /** 查询问诊列表 */
     getList() {
       this.loading = true;
@@ -294,7 +391,7 @@ export default {
       getRegistration(id).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改问诊";
+        this.title = "问诊";
       });
     },
     /** 提交按钮 */

@@ -5,15 +5,15 @@ import com.ruoyi.system.domain.Examination;
 
 /**
  * 检查费设置Mapper接口
- * 
+ *
  * @author William Wu
  * @date 2024-04-24
  */
-public interface ExaminationMapper 
+public interface ExaminationMapper
 {
     /**
      * 查询检查费设置
-     * 
+     *
      * @param id 检查费设置主键
      * @return 检查费设置
      */
@@ -21,7 +21,7 @@ public interface ExaminationMapper
 
     /**
      * 查询检查费设置列表
-     * 
+     *
      * @param examination 检查费设置
      * @return 检查费设置集合
      */
@@ -29,7 +29,7 @@ public interface ExaminationMapper
 
     /**
      * 新增检查费设置
-     * 
+     *
      * @param examination 检查费设置
      * @return 结果
      */
@@ -37,7 +37,7 @@ public interface ExaminationMapper
 
     /**
      * 修改检查费设置
-     * 
+     *
      * @param examination 检查费设置
      * @return 结果
      */
@@ -45,7 +45,7 @@ public interface ExaminationMapper
 
     /**
      * 删除检查费设置
-     * 
+     *
      * @param id 检查费设置主键
      * @return 结果
      */
@@ -53,9 +53,11 @@ public interface ExaminationMapper
 
     /**
      * 批量删除检查费设置
-     * 
+     *
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
     public int deleteExaminationByIds(Long[] ids);
+
+    public List<Examination>selectExaminationByDept(String dept);
 }

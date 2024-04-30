@@ -42,3 +42,10 @@ export function delRegistration(id) {
     method: 'delete'
   })
 }
+
+export function chargeOptions(){
+  return request({
+    url:'/system/registration/chargeOptions',
+    method:'get',
+  })
+}

@@ -60,4 +60,6 @@ public interface IMedicineService
     public int deleteMedicineById(Integer id);
 
     public int outboundsMedicine(Medicine medicine);
+
+    public List<Medicine> selectMedicineByDept(String dept);
 }

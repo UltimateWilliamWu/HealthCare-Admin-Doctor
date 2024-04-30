@@ -9,19 +9,19 @@ import com.ruoyi.system.service.IExaminationService;
 
 /**
  * 检查费设置Service业务层处理
- * 
+ *
  * @author William Wu
  * @date 2024-04-24
  */
 @Service
-public class ExaminationServiceImpl implements IExaminationService 
+public class ExaminationServiceImpl implements IExaminationService
 {
     @Autowired
     private ExaminationMapper examinationMapper;
 
     /**
      * 查询检查费设置
-     * 
+     *
      * @param id 检查费设置主键
      * @return 检查费设置
      */
@@ -33,7 +33,7 @@ public class ExaminationServiceImpl implements IExaminationService
 
     /**
      * 查询检查费设置列表
-     * 
+     *
      * @param examination 检查费设置
      * @return 检查费设置
      */
@@ -45,7 +45,7 @@ public class ExaminationServiceImpl implements IExaminationService
 
     /**
      * 新增检查费设置
-     * 
+     *
      * @param examination 检查费设置
      * @return 结果
      */
@@ -57,7 +57,7 @@ public class ExaminationServiceImpl implements IExaminationService
 
     /**
      * 修改检查费设置
-     * 
+     *
      * @param examination 检查费设置
      * @return 结果
      */
@@ -69,7 +69,7 @@ public class ExaminationServiceImpl implements IExaminationService
 
     /**
      * 批量删除检查费设置
-     * 
+     *
      * @param ids 需要删除的检查费设置主键
      * @return 结果
      */
@@ -81,7 +81,7 @@ public class ExaminationServiceImpl implements IExaminationService
 
     /**
      * 删除检查费设置信息
-     * 
+     *
      * @param id 检查费设置主键
      * @return 结果
      */
@@ -89,5 +89,10 @@ public class ExaminationServiceImpl implements IExaminationService
     public int deleteExaminationById(Long id)
     {
         return examinationMapper.deleteExaminationById(id);
+    }
+
+    @Override
+    public List<Examination> selectExaminationByDept(String dept) {
+        return examinationMapper.selectExaminationByDept(dept);
     }
 }

@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.ExaminationMapper">
-    
+
     <resultMap type="Examination" id="ExaminationResult">
         <result property="id"    column="id"    />
         <result property="department"    column="department"    />
@@ -12,25 +12,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="price"    column="price"    />
     </resultMap>
 
+    <select id="selectExaminationByDept" parameterType="String" resultMap="ExaminationResult">
+        select name,price from examination where department=#{department}
+    </select>
+
     <sql id="selectExaminationVo">
         select id, department, name, content, price from examination
     </sql>
 
     <select id="selectExaminationList" parameterType="Examination" resultMap="ExaminationResult">
         <include refid="selectExaminationVo"/>
-        <where>  
+        <where>
             <if test="department != null  and department != ''"> and department = #{department}</if>
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
             <if test="content != null  and content != ''"> and content = #{content}</if>
             <if test="price != null "> and price = #{price}</if>
         </where>
     </select>
-    
+
     <select id="selectExaminationById" parameterType="Long" resultMap="ExaminationResult">
         <include refid="selectExaminationVo"/>
         where id = #{id}
     </select>
-        
+
     <insert id="insertExamination" parameterType="Examination" useGeneratedKeys="true" keyProperty="id">
         insert into examination
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -63,7 +67,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteExaminationByIds" parameterType="String">
-        delete from examination where id in 
+        delete from examination where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

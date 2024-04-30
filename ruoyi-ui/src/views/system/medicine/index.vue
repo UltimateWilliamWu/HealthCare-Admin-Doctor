@@ -33,18 +33,18 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="剂型" prop="dosage">
+      <el-form-item label="种类" prop="dosage">
         <el-input
           v-model="queryParams.dosage"
-          placeholder="请输入剂型"
+          placeholder="请输入种类"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="单位" prop="unit">
+      <el-form-item label="科室" prop="unit">
         <el-input
           v-model="queryParams.unit"
-          placeholder="请输入单位"
+          placeholder="请输入科室"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -132,8 +132,8 @@
       <el-table-column label="制造商" align="center" prop="manufacturer" />
       <el-table-column label="价格" align="center" prop="price" />
       <el-table-column label="数量" align="center" prop="quantity" />
-      <el-table-column label="剂型" align="center" prop="dosage" />
-      <el-table-column label="单位" align="center" prop="unit" />
+      <el-table-column label="种类" align="center" prop="dosage" />
+      <el-table-column label="科室" align="center" prop="unit" />
       <el-table-column label="规格" align="center" prop="specification" />
       <el-table-column label="生产日期" align="center" prop="productiondate" />
       <el-table-column label="保质期" align="center" prop="dateofuse" />
@@ -180,11 +180,11 @@
         <el-form-item label="数量" prop="quantity">
           <el-input v-model="form.quantity" placeholder="请输入数量" />
         </el-form-item>
-        <el-form-item label="剂型" prop="dosage">
-          <el-input v-model="form.dosage" placeholder="请输入剂型" />
+        <el-form-item label="种类" prop="dosage">
+          <el-input v-model="form.dosage" placeholder="请输入种类" />
         </el-form-item>
-        <el-form-item label="单位" prop="unit">
-          <el-input v-model="form.unit" placeholder="请输入单位" />
+        <el-form-item label="科室" prop="unit">
+          <el-input v-model="form.unit" placeholder="请输入科室" />
         </el-form-item>
         <el-form-item label="规格" prop="specification">
           <el-input v-model="form.specification" placeholder="请输入规格" />

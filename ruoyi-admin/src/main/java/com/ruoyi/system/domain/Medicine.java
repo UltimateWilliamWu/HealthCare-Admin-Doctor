@@ -36,11 +36,11 @@ public class Medicine extends BaseEntity
     private Long quantity;
 
     /** 剂型 */
-    @Excel(name = "剂型")
+    @Excel(name = "种类")
     private String dosage;
 
     /** 单位 */
-    @Excel(name = "单位")
+    @Excel(name = "科室")
     private String unit;
 
     /** 规格 */

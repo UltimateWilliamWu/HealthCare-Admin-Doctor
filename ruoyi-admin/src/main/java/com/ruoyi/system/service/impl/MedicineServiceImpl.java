@@ -95,4 +95,9 @@ public class MedicineServiceImpl implements IMedicineService
     public int outboundsMedicine(Medicine medicine) {
         return medicineMapper.outboundMedicine(medicine);
     }
+
+    @Override
+    public List<Medicine> selectMedicineByDept(String dept) {
+        return medicineMapper.selectMedicineByDept(dept);
+    }
 }

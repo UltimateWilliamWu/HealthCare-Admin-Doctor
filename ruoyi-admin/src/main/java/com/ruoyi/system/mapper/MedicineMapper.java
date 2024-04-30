@@ -60,4 +60,6 @@ public interface MedicineMapper
     public int deleteMedicineByIds(Integer[] ids);
 
     public int outboundMedicine(Medicine medicine);
+
+    public List<Medicine> selectMedicineByDept(String dept);
 }

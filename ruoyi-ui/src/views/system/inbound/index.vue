@@ -14,7 +14,7 @@
           <el-table-column prop="manufacturer" label="制造商" > </el-table-column>
           <el-table-column prop="price" label="价格" > </el-table-column>
           <el-table-column prop="quantity" label="数量" > </el-table-column>
-          <el-table-column prop="dosage" label="剂型"> </el-table-column>
+          <el-table-column prop="dosage" label="种类"> </el-table-column>
           <el-table-column prop="unit" label="单位" > </el-table-column>
           <el-table-column prop="specification" label="规格"> </el-table-column>
           <el-table-column prop="productiondate" label="生产日期"> </el-table-column>
