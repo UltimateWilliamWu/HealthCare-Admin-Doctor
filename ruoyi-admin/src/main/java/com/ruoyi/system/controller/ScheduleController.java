@@ -140,7 +140,6 @@ public class ScheduleController extends BaseController
     public TableDataInfo getSchedule(String query)
     {
         Schedule schedule=new Schedule();
-        System.out.println(query);
         schedule.setCategory(query);
         startPage();
         List<Schedule> list = scheduleService.selectScheduleList(schedule);
@@ -165,9 +164,9 @@ public class ScheduleController extends BaseController
         List<Schedule> scheduleList = new ArrayList<>();;
 
         Loader.loadNativeLibraries();
-        final int numNurses = doctors.size();
-        final int numDays =date.size();
-        final int numShifts = 3;
+        final int numNurses = doctors.size();//医生列表
+        final int numDays =date.size();//日期列表
+        final int numShifts = 3;//班次
 
         final int[] allNurses = IntStream.range(0, numNurses).toArray();
         final int[] allDays = IntStream.range(0, numDays).toArray();
@@ -321,7 +320,6 @@ public class ScheduleController extends BaseController
         System.out.printf("  branches : %d%n", solver.numBranches());
         System.out.printf("  wall time: %f s%n", solver.wallTime());
 
-        System.out.println(scheduleList.get(0));
         return ResponseEntity.ok(scheduleList);
     }
 

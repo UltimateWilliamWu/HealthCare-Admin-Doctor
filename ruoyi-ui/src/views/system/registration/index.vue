@@ -181,10 +181,10 @@
       <!-- 诊断框 -->
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="诊断">
-          <editor v-model="form.message" :min-height="192"/>
+          <editor v-model="form.message" :min-height="150"/>
         </el-form-item>
         <el-form-item label="总价" prop="all">
-          <el-input v-model="form.all" placeholder="请输入总价" clearable :style="{width: '100%'}"></el-input>
+          <el-input v-model="form.all" placeholder="请输入总价" clearable :style="{width: '100%'}" id="all"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -211,13 +211,8 @@ export default {
   dicts: ['sys_user_sex'],
   data() {
     return {
+      totalPrice: 0,
       rules: {
-        /*charge: [{
-          required: true,
-          type: 'array',
-          message: '请至少选择一个收费项目',
-          trigger: 'change'
-        }],*/
         quantity: [{
           required: true,
           message: '数量',
@@ -288,16 +283,35 @@ export default {
     })
   },
   methods: {
+    computeTotalPrice() {
+      let total = 0;
+      for (const item of this.ruleForm) {
+        // 确保数量和费用为数字才进行计算
+        const quantity = parseFloat(item.quantity);
+        const fee = parseFloat(item.fee);
+        if (!isNaN(quantity) && !isNaN(fee)) {
+          total += quantity * fee;
+        }
+      }
+      return total;
+    },
     handlePrice(index,value){
       this.ruleForm[index].ratio=this.ruleForm[index].quantity*value;
+      this.form.all = this.computeTotalPrice();
     },
     handleQuantity(index,value){
-      this.ruleForm[index].ratio=this.ruleForm[index].fee*value;
+      if(this.ruleForm[index].fee){
+        this.ruleForm[index].ratio=this.ruleForm[index].fee*value;
+        this.form.all = this.computeTotalPrice();
+      }
     },
     handleChange(index,value) {
       // value 是一个数组，包含了选中的值
       this.ruleForm[index].fee=value[2];
-      this.ruleForm[index].ratio=this.ruleForm[index].quantity*value[2];
+      this.form.all = this.computeTotalPrice();
+      if(this.ruleForm[index].quantity&&this.ruleForm[index].fee){
+        this.ruleForm[index].ratio=this.ruleForm[index].quantity*value[2];
+      }
       // 如果你需要将选中的值传递给后端，可以在这里调用相关方法
     },
     // 表单添加一行
@@ -311,11 +325,13 @@ export default {
         id:"", }
       this.ruleForm.push(arr)
       this.flags()
+      this.form.all = this.computeTotalPrice();
     },
     // 表单减少一行
     reduce() {
       this.ruleForm.length = this.ruleForm.length - 1
       this.flags()
+      this.form.all = this.computeTotalPrice();
     },
     // 判断数组长度
     flags() {
