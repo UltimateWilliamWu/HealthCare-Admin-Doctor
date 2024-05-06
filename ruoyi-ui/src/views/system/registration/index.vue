@@ -159,12 +159,26 @@
           </el-form-item>
         </el-row>
         <el-row type="flex" justify="start" align="top" :gutter="parseInt('15')">
-          <el-form-item label="单价" property="fee" >
-            <el-input v-model="RuleForm.fee" placeholder="请输入单价" clearable :style="{width: '100%'}" @change="handlePrice(index,$event)">
+          <el-form-item label="模糊搜索" property="search" >
+            <el-select v-model="RuleForm.medicineList" clearable filterable placeholder="请选择" style="top: -6px;" @change="handleSearch(index,$event)">
+              <el-option v-for="o in medicineList"
+                         :key="o.id"
+                         :label="o.name"
+                         :value="o.price" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="报销比例" property="freeRatio" :gutter="parseInt('15')" >
+            <el-input v-model="freeRatio" placeholder="比例" clearable readonly>
             </el-input>
           </el-form-item>
-          <el-form-item label="项目总价" prop="ratio">
-            <el-input v-model="RuleForm.ratio" placeholder="请输入项目总价" clearable :style="{width: '100%'}">
+        </el-row>
+        <el-row type="flex" justify="start" align="top" :gutter="parseInt('15')">
+          <el-form-item label="单价" property="fee" :gutter="parseInt('15')" >
+            <el-input v-model="RuleForm.fee" placeholder="单价" clearable  @change="handlePrice(index,$event)" readonly>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="项目总价" prop="ratio" :gutter="parseInt('15')">
+            <el-input v-model="RuleForm.ratio" placeholder="项目总价" clearable readonly>
             </el-input>
           </el-form-item>
         </el-row>
@@ -184,7 +198,7 @@
           <editor v-model="form.message" :min-height="150"/>
         </el-form-item>
         <el-form-item label="总价" prop="all">
-          <el-input v-model="form.all" placeholder="请输入总价" clearable :style="{width: '100%'}" id="all"></el-input>
+          <el-input v-model="form.allcharge" placeholder="请输入总价" clearable :style="{width: '100%'}" id="all" readonly></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -205,13 +219,15 @@ import {
   chargeOptions
 } from "@/api/system/registration";
 import index from "vuex";
+import {listMedicine} from "@/api/system/medicine";
 
 export default {
   name: "Registration",
   dicts: ['sys_user_sex'],
   data() {
     return {
-      totalPrice: 0,
+      medicineList: [],
+      freeRatio:'80%',
       rules: {
         quantity: [{
           required: true,
@@ -220,7 +236,7 @@ export default {
         }],
         fee: [],
         ratio: [],
-        all: [{
+        allcharge: [{
           required: true,
           message: '请输入总计',
           trigger: 'blur'
@@ -237,6 +253,7 @@ export default {
         fee: "",
         ratio: "",
         all: "",
+        freeRatio:"",
         id:0,
       }],
       flag: true,
@@ -280,35 +297,52 @@ export default {
     this.getList();
     chargeOptions().then(response=>{
       this.chargeOptions = response;
-    })
+    });
+    listMedicine(this.queryParams).then(response => {
+      this.medicineList = response.rows;
+      console.log(this.medicineList)
+    });
   },
   methods: {
+    handleSearch(index,value){
+      this.ruleForm[index].charge=[{}];
+      this.ruleForm[index].fee=value;
+      this.form.allcharge = this.computeTotalPrice();
+      if(this.ruleForm[index].quantity&&this.ruleForm[index].fee){
+        this.ruleForm[index].ratio=this.ruleForm[index].quantity*value;
+      }
+    },
+    //计算总价
     computeTotalPrice() {
       let total = 0;
       for (const item of this.ruleForm) {
         // 确保数量和费用为数字才进行计算
-        const quantity = parseFloat(item.quantity);
-        const fee = parseFloat(item.fee);
-        if (!isNaN(quantity) && !isNaN(fee)) {
+        const quantity = parseFloat(item.quantity);//获取数量
+        const fee = parseFloat(item.fee);//获取单价
+        if (!isNaN(quantity) && !isNaN(fee)) { //计算总价
           total += quantity * fee;
         }
       }
       return total;
     },
+    //价格变化监听器
     handlePrice(index,value){
       this.ruleForm[index].ratio=this.ruleForm[index].quantity*value;
-      this.form.all = this.computeTotalPrice();
+      this.form.allcharge = this.computeTotalPrice();
     },
+    //数量变化监听器
     handleQuantity(index,value){
       if(this.ruleForm[index].fee){
         this.ruleForm[index].ratio=this.ruleForm[index].fee*value;
-        this.form.all = this.computeTotalPrice();
+        this.form.allcharge = this.computeTotalPrice();
       }
     },
+    //项目变化监听器
     handleChange(index,value) {
       // value 是一个数组，包含了选中的值
-      this.ruleForm[index].fee=value[2];
-      this.form.all = this.computeTotalPrice();
+      this.ruleForm[index].medicineList=[];
+      this.ruleForm[index].fee=value[2];//获取选中的项目价格
+      this.form.allcharge = this.computeTotalPrice();
       if(this.ruleForm[index].quantity&&this.ruleForm[index].fee){
         this.ruleForm[index].ratio=this.ruleForm[index].quantity*value[2];
       }
@@ -325,13 +359,13 @@ export default {
         id:"", }
       this.ruleForm.push(arr)
       this.flags()
-      this.form.all = this.computeTotalPrice();
+      this.form.allcharge = this.computeTotalPrice();
     },
     // 表单减少一行
     reduce() {
       this.ruleForm.length = this.ruleForm.length - 1
       this.flags()
-      this.form.all = this.computeTotalPrice();
+      this.form.allcharge = this.computeTotalPrice();
     },
     // 判断数组长度
     flags() {

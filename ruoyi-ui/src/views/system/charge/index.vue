@@ -1,74 +1,60 @@
 <template>
   <div>
-    <el-form v-for="ruleForm in ruleForm" :key="ruleForm" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="姓名" prop="name">
-            <el-input v-model="ruleForm.name"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="性别" prop="sex">
-            <el-input v-model="ruleForm.sex"></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-form-item label="备注" prop="memo">
-        <el-input v-model="ruleForm.memo"></el-input>
-      </el-form-item>
-      <el-divider></el-divider>
-    </el-form>
-    <el-form>
-      <el-form-item label-width="100px">
-        <el-button type="primary" @click="submitFormAdd()">保存并关闭</el-button>
-        <el-button @click="resetForm()">重置</el-button>
-        <el-button @click="add">+</el-button>
-        <el-button @click="reduce" :disabled="flag">-</el-button>
-      </el-form-item>
-    </el-form>
+    <el-form-item label="国家" prop="country">
+      <el-select
+        v-model="dataForm.country"
+        style="width:300px"
+        filterable
+        remote
+        reserve-keyword
+        placeholder="请输入关键词"
+        :remote-method="remoteMethod"
+        clearable>
+        <el-option v-for="(item,index) in countryOpt" :key="index" :value="item.value" :label="item.label"></el-option>
+      </el-select>
+    </el-form-item>
   </div>
 </template>
 <script>
 export default {
-  data() {
-    return {
-      // 表单
-      ruleForm: [
-        {
-          name: '',
-          sex: '',
-          memo: ''
-        }
-      ],
-      flag: true
+
+  data(){
+    return{
+      countryList:[],//所有国家 我的数据是后端返回的
+      countryOpt:[],//展示的国家
+      dataForm:{
+        country:'',
+      },
     }
   },
+
+
   methods:{
-    // 表单添加一行
-    add() {
-      var arr = { name: '', sex: '', memo: '' }
-      this.ruleForm.push(arr)
-      this.flags()
-    },
-    // 表单减少一行
-    reduce() {
-      this.ruleForm.length = this.ruleForm.length - 1
-      this.flags()
-    },
-    // 判断数组长度
-    flags() {
-      if (this.ruleForm.length < 2) {
-        this.flag = true
-      } else {
-        //先赋值为true再赋为false, 不然会没反应
-        this.flag = true
-        this.flag = false
+    remoteMethod(query){
+      if(query !== ''){
+        this.countryOpt = []
+        for(let i in this.countryList){
+          // 模糊查询且不区分大小写
+          if((this.countryList[i]).toLowerCase().indexOf(query.toLowerCase()) !== -1){ //未匹配成功时返回-1
+            let obj = {
+              value:this.countryList[i],
+              label:this.countryList[i],
+            }
+            this.countryOpt.push(obj)
+          }
+        }
+      }else{
+        for(let i in this.countryList){
+          let obj = {
+            value:this.countryList[i],
+            label:this.countryList[i],
+          }
+          this.countryOpt.push(obj)
+        }
       }
+
     },
-    // 重置方法
-    resetForm() {
-      this.ruleForm = [{}]
-    }
+
   }
 }
 </script>

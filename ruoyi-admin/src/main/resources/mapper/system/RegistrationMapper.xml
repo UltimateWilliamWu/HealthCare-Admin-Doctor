@@ -82,6 +82,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="time != null">time = #{time},</if>
             <if test="message != null">message = #{message},</if>
             <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="allcharge !=null">allcharge = #{allcharge},</if>
         </trim>
         where id = #{id}
     </update>

@@ -192,20 +192,19 @@
             <span>更新日志</span>
           </div>
           <el-collapse accordion>
-            <el-collapse-item title="v0.0.1 - 2024-4-1">
+            <el-collapse-item title="v1.0.0 - 2024-4-1">
               <li>超级管理员端</li>
               <ol>
-                <li>实现医生的增删改查</li>
-                <li>实现科室的增删改查</li>
-                <li>实现病床的增删改查</li>
-                <li>实现药房的增删改查</li>
-                <li>实现用户权限的管理</li>
-                <li>实现用户岗位的分配</li>
-                <li>实现日志管理</li>
-                <li>实现通知公告</li>
+                <li>实现系统管理</li>
+                <li>实现参数设置</li>
+                <li>实现菜单管理</li>
+                <li>实现字典设置</li>
+                <li>实现系统监控</li>
+                <li>实现在线用户</li>
+                <li>实现服务监控</li>
               </ol>
             </el-collapse-item>
-            <el-collapse-item title="v1.0.0 - 2024-4-22">
+            <el-collapse-item title="v1.0.1 - 2024-4-15">
               <li>管理员端</li>
               <ol>
                 <li>实现医生的增删改查</li>
@@ -218,7 +217,7 @@
                 <li>实现通知公告</li>
               </ol>
             </el-collapse-item>
-            <el-collapse-item title="v1.0.1 - 2024-4-27">
+            <el-collapse-item title="v1.0.2 - 2024-5-1">
               <li>管理员端</li>
               <ol>
                 <li>实现手动排班</li>

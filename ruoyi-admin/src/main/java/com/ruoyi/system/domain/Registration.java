@@ -7,7 +7,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 问诊对象 registration
- * 
+ *
  * @author WilliamWu
  * @date 2024-04-24
  */
@@ -55,102 +55,112 @@ public class Registration extends BaseEntity
     /** 完成标记 */
     private String delFlag;
 
-    public void setId(Long id) 
+    private double allcharge;
+
+    public double getAllcharge() {
+        return allcharge;
+    }
+
+    public void setAllcharge(double allcharge) {
+        this.allcharge = allcharge;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }
 
-    public Long getId() 
+    public Long getId()
     {
         return id;
     }
-    public void setPatientid(String patientid) 
+    public void setPatientid(String patientid)
     {
         this.patientid = patientid;
     }
 
-    public String getPatientid() 
+    public String getPatientid()
     {
         return patientid;
     }
-    public void setPatientname(String patientname) 
+    public void setPatientname(String patientname)
     {
         this.patientname = patientname;
     }
 
-    public String getPatientname() 
+    public String getPatientname()
     {
         return patientname;
     }
-    public void setFee(Long fee) 
+    public void setFee(Long fee)
     {
         this.fee = fee;
     }
 
-    public Long getFee() 
+    public Long getFee()
     {
         return fee;
     }
-    public void setPatientsex(String patientsex) 
+    public void setPatientsex(String patientsex)
     {
         this.patientsex = patientsex;
     }
 
-    public String getPatientsex() 
+    public String getPatientsex()
     {
         return patientsex;
     }
-    public void setDepartmentid(String departmentid) 
+    public void setDepartmentid(String departmentid)
     {
         this.departmentid = departmentid;
     }
 
-    public String getDepartmentid() 
+    public String getDepartmentid()
     {
         return departmentid;
     }
-    public void setDoctorid(String doctorid) 
+    public void setDoctorid(String doctorid)
     {
         this.doctorid = doctorid;
     }
 
-    public String getDoctorid() 
+    public String getDoctorid()
     {
         return doctorid;
     }
-    public void setDate(String date) 
+    public void setDate(String date)
     {
         this.date = date;
     }
 
-    public String getDate() 
+    public String getDate()
     {
         return date;
     }
-    public void setTime(String time) 
+    public void setTime(String time)
     {
         this.time = time;
     }
 
-    public String getTime() 
+    public String getTime()
     {
         return time;
     }
-    public void setMessage(String message) 
+    public void setMessage(String message)
     {
         this.message = message;
     }
 
-    public String getMessage() 
+    public String getMessage()
     {
         return message;
     }
-    public void setDelFlag(String delFlag) 
+    public void setDelFlag(String delFlag)
     {
         this.delFlag = delFlag;
     }
 
-    public String getDelFlag() 
+    public String getDelFlag()
     {
         return delFlag;
     }
