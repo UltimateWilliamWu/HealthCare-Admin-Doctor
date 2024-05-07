@@ -2,7 +2,7 @@
 	<img alt="logo" src="https://github.com/UltimateWilliamWu/HealthCare-Admin-Doctor/blob/2c2282dba5f7766eea96269dfefd163c996d5cfe/ruoyi-ui/src/assets/logo/logo.png" width="100px" height="100px">
 </p>
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">OSH-HealthCare v1.0.0</h1>
-<h4 align="center">基于Java若依快速开发框架的只能医疗健康系统（毕业设计）</h4>
+<h4 align="center">基于Java若依快速开发框架的智能医疗健康系统（毕业设计）</h4>
 <p align="center">
     大学时期的毕业设计，水平有限，简单实现健康医疗系统
 </p>
