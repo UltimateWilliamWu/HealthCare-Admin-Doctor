@@ -103,10 +103,17 @@
           这是一款基于Springboot+vue+redis+mybatis+mysql结合若依框架开发的智能健康医疗系统，含有患者端、医生端、管理员端以及区块链上传病历模块。
         </p>
         <p>
-          <b>当前版本:</b> <span>v{{ version }}</span>
+          <b>当前版本:</b> <span>v{{ version }}</span><el-tag type="danger" style="margin-left: 2%">免费开源</el-tag>
         </p>
         <p>
-          <el-tag type="danger">免费开源</el-tag>
+          <el-button
+            ref="check"
+            type="warning"
+            plain
+            icon="el-icon-check"
+            size="mini"
+            @click="openModal"
+          >打卡</el-button>
         </p>
         <p>
           <el-button
@@ -243,6 +250,25 @@
       </el-col>
     </el-row>
 
+    <el-dialog :title="title2" :visible.sync="open2" width="1000px" append-to-body @close="closeDialog">
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <div style="margin-left: 40%;font-size: 14px;font-weight: bold;margin-bottom: 10px;">摄像头</div>
+          <video ref="video" width="400" height="300" autoplay></video><canvas ref="canvas" style="display: none;"></canvas>
+          <div class="iCenter" >
+            <el-button type='primary' size='small' icon="el-icon-camera" @click="startCamera" style="margin-top: 10px;margin-left: 30%">拍照</el-button>
+          </div>
+        </el-col>
+        <el-col :span="12">
+          <div style="margin-left: 40%;font-size: 14px;font-weight: bold;margin-bottom: 10px;">拍摄效果</div>
+          <div style="width:400px;height:300px;display: block;" >
+            <img :src="photo" v-if="photo" alt="Photo" width='400' height='300' style="display: block;">
+          </div>
+          <el-button icon="el-icon-check" type='primary' size='small' @click="takePhoto" style="margin-top: 10px;margin-left: 40%">确定</el-button>
+        </el-col>
+      </el-row>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -268,6 +294,8 @@ import {rules} from "../../.eslintrc";
 
 import {listDoctor} from "@/api/system/user";
 import axios from "axios";
+import {uploadPhoto} from "@/api/system/photo";
+import store from "@/store";
 
 export default {
   name: "Index",
@@ -279,6 +307,11 @@ export default {
   dicts: ['sys_notice_status', 'sys_notice_type'],
   data() {
     return {
+      photo: null,
+      stream: null,
+      open2:false,
+      title2:"打卡",
+
       toolbar: [],
       // 公告表格数据
       noticeList: [],
@@ -301,6 +334,62 @@ export default {
     };
   },
   methods: {
+    openModal() {
+      this.open2 = true;
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+          this.stream = stream;
+          this.$refs.video.srcObject = stream;
+          this.open2 = true;
+        })
+        .catch(error => {
+          console.error('Error accessing camera:', error);
+          alert('无法访问摄像头，请允许访问摄像头后重试。');
+        });
+    },
+    closeDialog() {
+      if (this.stream) {
+        this.stream.getTracks().forEach(track => track.stop());
+      }
+    },
+    startCamera() {
+      const video = this.$refs.video;
+      const canvas = this.$refs.canvas;
+      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+      this.photo = canvas.toDataURL('image/jpeg',1.0);
+    },
+    takePhoto() {
+      this.savePhoto();
+    },
+    async savePhoto() {
+      try {
+        const formData = new FormData();
+        formData.append('file', this.dataURItoBlob(this.photo));
+        formData.append('avatar',store.getters.avatar);
+        await uploadPhoto(formData).then(response=>{
+          if(response==="打卡成功"){
+            this.$modal.msgSuccess("打卡成功");
+            this.open2=false;
+          }else {
+            this.$modal.msgError("打卡失败");
+          }
+        });
+
+      } catch (error) {
+        console.error('Error saving photo:', error);
+      }
+    },
+    dataURItoBlob(dataURI) {
+      const byteString = atob(dataURI.split(',')[1]);
+      const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+      const ab = new ArrayBuffer(byteString.length);
+      const ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+      }
+      return new Blob([ab], { type: mimeString });
+    },
+
     reset() {
       this.form = {
         noticeId: undefined,
@@ -332,31 +421,11 @@ export default {
     goTarget(href) {
       window.open(href, "_blank");
     },
-    fetchDoctorList() {
-      // 获取用户名
-      const username = this.$store.getters.name;
-
-      // 调用listDoctor函数，并传递用户名作为参数
-      listDoctor({ username: username })
-        .then(response => {
-          // 打印返回的数据到控制台
-          console.log(response);
-        })
-        .catch(error => {
-          // 处理错误
-          console.error('Error fetching doctor list:', error);
-        });
-    }
   },
   created() {
     this.getList();
     console.log("OSH-HealthCare系统欢迎您！"+this.$store.getters.name)
-    /*if(this.$store.getters.roles[0]==="root"){
-      //判断当前用于角色是否为普通用户
-      this.fetchDoctorList()
-      console.log(this.$store.getters.name)
-    }*/
-    //this.$store.getters.name 获取当前医生账号
+
     echarts.use([
       TooltipComponent,
       LegendComponent,
@@ -572,12 +641,19 @@ export default {
     option && myChart.setOption(option);
 
   },
-
+  beforeDestroy() {
+    if (this.stream) {
+      this.stream.getTracks().forEach(track => track.stop());
+    }
+  }
 };
 
 </script>
 
 <style scoped lang="scss">
+.camera-box #canvas{
+  border: 1px solid #DCDFE6;
+}
 .home {
   blockquote {
     padding: 10px 20px;
