@@ -177,4 +177,11 @@ public class RegistrationController extends BaseController
         return chargeOptions;
     }
 
+    @GetMapping(value = "/s/{username}")
+    public TableDataInfo getRegistrations(@PathVariable String username){
+        startPage();
+        List<Registration> list = registrationService.selectPatientByDoctorName(username);
+        return getDataTable(list);
+    }
+
 }

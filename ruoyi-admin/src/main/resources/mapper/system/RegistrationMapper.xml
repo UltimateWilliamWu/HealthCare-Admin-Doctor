@@ -18,6 +18,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="delFlag"    column="del_flag"    />
     </resultMap>
 
+    <select id="selectPatientByDoctorName" parameterType="String" resultMap="RegistrationResult">
+        select registration.id, registration.patientid, registration.patientname, registration.fee, registration.patientsex, registration.departmentid, registration.doctorid, registration.date, registration.time, registration.message, registration.del_flag from registration,sys_user where sys_user.user_id=registration.doctorid and sys_user.user_name= #{username};
+    </select>
+
     <sql id="selectRegistrationVo">
         select id, patientid, patientname, fee, patientsex, departmentid, doctorid, date, time, message, del_flag from registration
     </sql>

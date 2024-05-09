@@ -49,3 +49,10 @@ export function chargeOptions(){
     method:'get',
   })
 }
+
+export function getRegistrations(username){
+  return request({
+    url:'/system/registration/s/'+username,
+    method:'get',
+  })
+}

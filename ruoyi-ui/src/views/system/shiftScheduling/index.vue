@@ -35,7 +35,7 @@
 </template>
 <script>
 import {autoSchedule} from "@/api/system/schedule";
-import {listDoctor} from "@/api/system/user";
+import {listDoctor, listUser} from "@/api/system/user";
 import {addSchedulingFile} from "@/api/system/scheduling";
 import {EventBus} from "@/api/system/EventBus";
 // 获取日期范围内所有的日期
@@ -55,6 +55,16 @@ export default {
   props: [],
   data() {
     return {
+      // 查询参数
+      queryParams: {
+        pageNum: 1,
+        pageSize: 10,
+        userName: undefined,
+        phonenumber: undefined,
+        status: undefined,
+        deptId: undefined
+      },
+      dateRange: [],
       tableData:[],
       formData: {
         Date: null,
@@ -80,6 +90,7 @@ export default {
   watch: {},
   created() {
     const username = this.$store.getters.name;
+    //如果是科室主管则显示本科室的医生
     if(this.$store.getters.roles[0]==="root"){
       //返回其科室的所有医生
       listDoctor({ username: username })
@@ -92,6 +103,13 @@ export default {
           console.error('Error fetching doctor list:', error);
         });
       // this.fetchDoctorList()
+    }
+    //如果是管理员则显示所有医生
+    if(this.$store.getters.roles[0]==="admin"){
+      listUser(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+          this.$set(this, 'DoctorOptions', response.rows.map(doctor => doctor.userName));
+        }
+      );
     }
   },
   mounted() {

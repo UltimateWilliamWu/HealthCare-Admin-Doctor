@@ -216,7 +216,7 @@ import {
   delRegistration,
   addRegistration,
   updateRegistration,
-  chargeOptions
+  chargeOptions, getRegistrations
 } from "@/api/system/registration";
 import index from "vuex";
 import {listMedicine} from "@/api/system/medicine";
@@ -294,7 +294,16 @@ export default {
     };
   },
   created() {
-    this.getList();
+    if(this.$store.getters.roles[0]==="common"){
+      this.loading = true;
+      getRegistrations(this.$store.getters.name).then(response => {
+        this.registrationList = response.rows;
+        this.total = response.total;
+        this.loading = false;
+      });
+    } else {
+      this.getList();
+    }
     chargeOptions().then(response=>{
       this.chargeOptions = response;
     });
