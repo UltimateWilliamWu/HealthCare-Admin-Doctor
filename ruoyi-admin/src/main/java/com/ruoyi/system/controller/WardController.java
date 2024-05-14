@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.system.domain.Examination;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +23,11 @@ import com.ruoyi.system.domain.Ward;
 import com.ruoyi.system.service.IWardService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 病床管理Controller
- * 
+ *
  * @author William Wu
  * @date 2024-04-20
  */
@@ -33,7 +37,23 @@ public class WardController extends BaseController
 {
     @Autowired
     private IWardService wardService;
+    @PostMapping("/importData")
+    public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception
+    {
+        ExcelUtil<Ward> util = new ExcelUtil<Ward>(Ward.class);
+        List<Ward> userList = util.importExcel(file.getInputStream());
+        LoginUser loginUser = getLoginUser();
+        String operName = loginUser.getUsername();
+        String message = wardService.importWard(userList, updateSupport, operName);
+        return AjaxResult.success(message);
+    }
 
+    @PostMapping("/importTemplate")
+    public void importTemplate(HttpServletResponse response)
+    {
+        ExcelUtil<Ward> util = new ExcelUtil<Ward>(Ward.class);
+        util.importTemplateExcel(response,"用户数据");
+    }
     /**
      * 查询病床管理列表
      */

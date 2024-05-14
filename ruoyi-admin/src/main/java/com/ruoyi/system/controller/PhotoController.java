@@ -131,7 +131,7 @@ public class PhotoController extends BaseController {
             configuration.setSupportLiveness(true);
             errorCode = faceEngine.process(imageInfo.getImageData(), imageInfo.getWidth(), imageInfo.getHeight(), imageInfo.getImageFormat(), faceInfoList, configuration);
 
-            /*//性别检测
+            //性别检测
             List<GenderInfo> genderInfoList = new ArrayList<GenderInfo>();
             errorCode = faceEngine.getGender(genderInfoList);
             System.out.println("性别：" + genderInfoList.get(0).getGender());
@@ -144,7 +144,7 @@ public class PhotoController extends BaseController {
             //3D信息检测
             List<Face3DAngle> face3DAngleList = new ArrayList<Face3DAngle>();
             errorCode = faceEngine.getFace3DAngle(face3DAngleList);
-            System.out.println("3D角度：" + face3DAngleList.get(0).getPitch() + "," + face3DAngleList.get(0).getRoll() + "," + face3DAngleList.get(0).getYaw());*/
+            System.out.println("3D角度：" + face3DAngleList.get(0).getPitch() + "," + face3DAngleList.get(0).getRoll() + "," + face3DAngleList.get(0).getYaw());
 
             //活体检测
             List<LivenessInfo> livenessInfoList = new ArrayList<LivenessInfo>();

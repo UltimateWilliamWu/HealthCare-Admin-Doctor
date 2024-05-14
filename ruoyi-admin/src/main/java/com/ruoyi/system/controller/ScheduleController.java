@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.alibaba.fastjson2.JSONObject;
 import com.google.ortools.Loader;
 import com.google.ortools.sat.*;
+import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.system.domain.Examination;
 import com.ruoyi.system.domain.Medicine;
 import org.aspectj.weaver.loadtime.Aj;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,7 @@ import com.ruoyi.system.domain.Schedule;
 import com.ruoyi.system.service.IScheduleService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 排班总览Controller
@@ -43,6 +46,24 @@ public class ScheduleController extends BaseController
 {
     @Autowired
     private IScheduleService scheduleService;
+
+    @PostMapping("/importData")
+    public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception
+    {
+        ExcelUtil<Schedule> util = new ExcelUtil<Schedule>(Schedule.class);
+        List<Schedule> userList = util.importExcel(file.getInputStream());
+        LoginUser loginUser = getLoginUser();
+        String operName = loginUser.getUsername();
+        String message = scheduleService.importSchedule(userList, updateSupport, operName);
+        return AjaxResult.success(message);
+    }
+
+    @PostMapping("/importTemplate")
+    public void importTemplate(HttpServletResponse response)
+    {
+        ExcelUtil<Schedule> util = new ExcelUtil<Schedule>(Schedule.class);
+        util.importTemplateExcel(response,"用户数据");
+    }
 
     /**
      * 查询排班总览列表

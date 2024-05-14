@@ -22,7 +22,7 @@
         </el-table>
       </el-form-item>
       <el-form-item size="large" style="margin-left: 40%">
-        <el-button type="primary" @click="submitForm">导入</el-button>
+        <el-button type="primary" @click="submitForm">入库</el-button>
         <el-button @click="resetForm">重置</el-button>
       </el-form-item>
     </el-form>

@@ -60,4 +60,6 @@ public interface IExaminationService
     public int deleteExaminationById(Long id);
 
     public List<Examination> selectExaminationByDept(String dept);
+
+    public String importExamination(List<Examination> userList, Boolean isUpdateSupport, String operName);
 }

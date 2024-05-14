@@ -25,6 +25,10 @@
           <el-table-column prop="dateofuse" label="保质期"> </el-table-column>
         </el-table>
       </el-form-item>
+      <el-form-item size="large" style="margin-left: 40%">
+        <el-button type="primary" @click="submitForm">出库</el-button>
+        <el-button @click="resetForm">重置</el-button>
+      </el-form-item>
     </el-form>
   </div>
 </template>
