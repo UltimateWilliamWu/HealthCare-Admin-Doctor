@@ -11,6 +11,7 @@ import com.ruoyi.common.annotation.Excel.Type;
 import com.ruoyi.common.annotation.Excels;
 import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.xss.Xss;
+import org.springframework.format.annotation.NumberFormat;
 
 /**
  * 用户对象 sys_user
@@ -50,7 +51,7 @@ public class SysUser extends BaseEntity
     private String sex;
 
     @Excel(name="挂号费")
-    private double salary;
+    private Double salary;
 
     /** 用户头像 */
     private String avatar;
@@ -132,11 +133,11 @@ public class SysUser extends BaseEntity
         this.deptId = deptId;
     }
 
-    public double getSalary() {
+    public Double getSalary() {
         return salary;
     }
 
-    public void setSalary(double salary) {
+    public void setSalary(Double salary) {
         this.salary = salary;
     }
 

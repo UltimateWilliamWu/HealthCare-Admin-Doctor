@@ -67,6 +67,7 @@
       <el-col :span="1.5">
         <el-button
           type="info"
+          plain
           icon="el-icon-upload2"
           size="mini"
           @click="handleImport"

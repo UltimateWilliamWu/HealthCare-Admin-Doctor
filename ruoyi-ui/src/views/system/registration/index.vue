@@ -79,7 +79,7 @@
           v-hasPermi="['system:registration:edit']"
         >修改</el-button>
       </el-col>-->
-<!--      <el-col :span="1.5">
+      <el-col :span="1.5">
         <el-button
           type="danger"
           plain
@@ -89,7 +89,7 @@
           @click="handleDelete"
           v-hasPermi="['system:registration:remove']"
         >删除</el-button>
-      </el-col>-->
+      </el-col>
       <el-col :span="1.5">
         <el-button
           type="warning"
@@ -104,7 +104,7 @@
     </el-row>
 
     <el-table v-loading="loading" :data="registrationList" @selection-change="handleSelectionChange">
-<!--      <el-table-column type="selection" width="55" align="center" />-->
+      <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="编号" align="center" prop="id" />
       <el-table-column label="医保卡号" align="center" prop="patientid" />
       <el-table-column label="患者姓名" align="center" prop="patientname" />
@@ -125,7 +125,7 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['system:registration:edit']"
-          >修改</el-button>
+          >问诊</el-button>
 <!--          <el-button
             size="mini"
             type="text"

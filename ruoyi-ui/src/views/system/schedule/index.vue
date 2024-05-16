@@ -421,7 +421,18 @@ export default {
       } else {
         this.$delete(this.viewDate, this.hanleDay.day);
       }
-      delScheduleAll(deleteItem.id);
+      // delScheduleAll(deleteItem.id);
+      if (deleteItem && deleteItem.id) {
+        delScheduleAll(deleteItem.id).then(() => {
+          this.$modal.msgSuccess("删除成功");
+        }).catch(error => {
+          console.error("Error deleting schedule:", error);
+          this.$modal.msgError("删除失败");
+        });
+      } else {
+        console.error('Invalid deleteItem or deleteItem.id', deleteItem);
+        this.$modal.msgError("删除失败");
+      }
     },
     addDomain() {
       this.batchAddForm.classData.push({

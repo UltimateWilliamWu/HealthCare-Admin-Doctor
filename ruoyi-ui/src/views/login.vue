@@ -250,7 +250,7 @@ h3{
     <div class="logon">
       <div :class="overlaylong">
         <div class="overlaylong-Signin" v-if="disfiex == 0">
-          <h2 class="overlaylongH2">Doctor Account</h2>
+          <h2 class="overlaylongH2">医生账户</h2>
           <el-form ref="loginForm" :model="loginForm" :rules="loginRules" >
             <el-form-item prop="username">
               <el-input
@@ -306,7 +306,7 @@ h3{
           </el-form>
         </div>
         <div class="overlaylong-Signup" v-if="disfiex == 1">
-          <h2 class="overlaylongH2">Administer Account</h2>
+          <h2 class="overlaylongH2">管理员账户</h2>
           <el-form ref="loginForm" :model="loginForm" :rules="loginRules">
             <el-form-item prop="username">
               <el-input
@@ -365,16 +365,16 @@ h3{
       </div>
       <div :class="overlaytitle">
         <div class="overlaytitle-Signin" v-if="disfiex == 0">
-          <h2 class="overlaytitleH2">Hello,Doctor!</h2>
+          <h2 class="overlaytitleH2">欢迎，医生!</h2>
           <p class="overlaytitleP">
-            Enter your personal details and start journey with us
+            请输入个人信息
           </p>
-          <div class="buttongohs" @click="Signin">Administer?</div>
+          <div class="buttongohs" @click="Signin">管理员?</div>
         </div>
         <div class="overlaytitle-Signup" v-if="disfiex == 1">
-          <h2 class="overlaytitleH2">Welcome Administer!</h2>
-          <p class="overlaytitleP" style="margin-left: 10%">To keep connected with us please login with your personal info</p>
-          <div class="buttongohs" @click="Signup">Doctor?</div>
+          <h2 class="overlaytitleH2">欢迎，管理员!</h2>
+          <p class="overlaytitleP" style="margin-left: 10%">请输入个人信息</p>
+          <div class="buttongohs" @click="Signup">医生?</div>
         </div>
       </div>
     </div>
