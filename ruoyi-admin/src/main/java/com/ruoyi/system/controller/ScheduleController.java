@@ -127,7 +127,7 @@ public class ScheduleController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:scheduleAll:remove')")
     @Log(title = "排班总览", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
+	@DeleteMapping(value = "/{ids}")
     public AjaxResult remove(@PathVariable String[] ids)
     {
         return toAjax(scheduleService.deleteScheduleByIds(ids));

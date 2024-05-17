@@ -7,10 +7,10 @@
       </div>
       <el-calendar>
         <!-- 这里使用的是 2.5 slot 语法，对于新项目请使用 2.6 slot 语法-->
-        <template slot="dateCell" slot-scope="{ date, data }">
-          <div class="day-content-class" id="day">
+        <template slot="dateCell" slot-scope="{ date, data }" >
+          <div class="day-content-class">
             <template v-if="viewDate[data.day]">
-              <div class="header-class">
+              <div class="header-class" >
                 <div class="day-class">
                   {{
                     data.day
@@ -19,8 +19,8 @@
                       .join("-")
                   }}
                 </div>
-                <div class="handle-class">
-                  <el-button icon="el-icon-edit" size="mini" circle @click="handleWorkInfo(viewDate[data.day], data)">
+                <div class="handle-class" >
+                  <el-button icon="el-icon-edit" size="mini" circle @click="handleWorkInfo(viewDate[data.day], data)" id="day">
                   </el-button>
                 </div>
               </div>
@@ -149,7 +149,7 @@
           <el-table-column property="endTime" label="结束时间" width="160"></el-table-column>
           <el-table-column fixed="right" label="操作" width="80">
             <template slot-scope="scope">
-              <el-button @click.native.prevent="deleteRow(scope, workInfoList)" type="text" size="small">
+              <el-button @click.native.prevent="deleteRow(scope.row, workInfoList)" type="text" size="small">
                 移除
               </el-button>
             </template>
@@ -244,6 +244,7 @@ export default {
       hanleDay: "",
       workInfoList: [],
 
+      ids:[],
       // 时间范围
       dateRange: [],
       changeDateDrawer: false,
@@ -379,6 +380,7 @@ export default {
     },
     // 添加单日排班
     addWork() {
+      this.workInfoList=[];
       let startTime,endTime;
       switch (this.addForm.shiftName){
         case "早":
@@ -406,10 +408,15 @@ export default {
         date: this.hanleDay.day,
         sort: this.addForm.sort,
       };
-      this.workInfoList.push(info);
       // console.log(info)
+      addSchedule(info).then(()=>{
+        console.log(this.viewDate)
+        this.$message.success("添加成功")
+      }).catch(error=>{
+        this.$message.error("添加失败")
+      });
+      EventBus.$emit('update-schedule');
       this.$set(this.viewDate, this.hanleDay.day, this.workInfoList);
-      addSchedule(info);
       this.innerDrawer = false;
     },
     // 清除单日排班数据
@@ -422,17 +429,14 @@ export default {
         this.$delete(this.viewDate, this.hanleDay.day);
       }
       // delScheduleAll(deleteItem.id);
-      if (deleteItem && deleteItem.id) {
-        delScheduleAll(deleteItem.id).then(() => {
-          this.$modal.msgSuccess("删除成功");
-        }).catch(error => {
-          console.error("Error deleting schedule:", error);
-          this.$modal.msgError("删除失败");
-        });
-      } else {
-        console.error('Invalid deleteItem or deleteItem.id', deleteItem);
+      const ids = row.id || this.ids;
+      console.log("删除的id"+deleteItem.id)
+      delScheduleAll(ids).then(() => {
+        this.$modal.msgSuccess("删除成功");
+      }).catch(error => {
+        console.error("Error deleting schedule:", error);
         this.$modal.msgError("删除失败");
-      }
+      })
     },
     addDomain() {
       this.batchAddForm.classData.push({
@@ -457,29 +461,29 @@ export default {
     // 批量添加排班数据
     batchAddWork() {
       let startTime,endTime;
-      switch (this.batchAddForm.classData[0].shiftName){
-        case "早":
-          startTime=this.hanleDay.day +" 00:00";
-          endTime=this.hanleDay.day +" 08:00";
-          break;
-        case "中":
-          startTime=this.hanleDay.day +" 08:00";
-          endTime=this.hanleDay.day +" 16:00";
-          break;
-        case "晚":
-          startTime=this.hanleDay.day +" 16:00";
-          endTime=this.hanleDay.day +" 24:00";
-          break;
-      }
       let dateList = this.batchAddForm.batchDate;
       let classList = this.batchAddForm.classData;
+      let workList = [];
       let list = [];
       if (dateList && dateList.length > 0) {
         list = this.enumerateDaysBetweenDates(dateList[0], dateList[1]);
       }
       list.forEach((item) => {
-        let workList = [];
         classList.forEach((work) => {
+          switch (work.shiftName){
+            case "早":
+              startTime=item +" 00:00";
+              endTime=item +" 08:00";
+              break;
+            case "中":
+              startTime=item +" 08:00";
+              endTime=item +" 16:00";
+              break;
+            case "晚":
+              startTime=item +" 16:00";
+              endTime=item +" 24:00";
+              break;
+          }
           let info = {
             ruleName: "四班三转",
             shiftName: work.shiftName,
@@ -493,26 +497,14 @@ export default {
             sort: this.setSortValue(work.shiftName),
           };
           workList.push(info);
+          console.log("排班列表："+workList)
           // addBatchSchedule(workList);
-          addBatchSchedule(workList)
-            .then(() => {
-              // 添加成功后更新视图
-              workList.forEach((work) => {
-                if (!this.viewDate[work.date]) {
-                  this.$set(this.viewDate, work.date, []);
-                }
-                this.viewDate[work.date].push(work);
-              });
-              // 重新渲染视图
-              this.$forceUpdate();
-            })
-            .catch((error) => {
-              console.error('Error adding batch schedule:', error);
-            });
         });
 
       });
-
+      addBatchSchedule(workList);
+      EventBus.$emit('update-schedule');
+      this.$forceUpdate();
       this.batchAddDrawer = false;
       this.batchAddForm = {
         batchDate: [],
@@ -567,16 +559,81 @@ export default {
     },
   },
   created() {
+    EventBus.$on('update-schedule', () => {
+      // 在事件发生时从数据库获取新数据，并更新组件的数据
+      this.viewDate = {};
+      const username = this.$store.getters.name;
+      if(this.$store.getters.roles[0]==="common") {
+        //判断当前角色是否为普通用户 如果是则只显示个人排班
+        getSchedule({ query: username })
+          .then(response=>{
+            response.rows.forEach(item => {
+              const date = item.date; // 假设 date 是日期字段
+              // 如果该日期已存在于 viewDate 中，则将当前数据追加到已有数据中，否则创建新的数组存储该日期的数据
+              item.sort = item.shifts === '早' ? 1 : (item.shifts === '中' ? 2 : (item.shifts === '晚' ? 3 : 0));
+              item.shiftName=item.shifts;
+              item.groupName=item.category;
+              item.startTime=item.begin;
+              item.endTime=item.end;
+              if (this.viewDate[date]) {
+                this.viewDate[date].push(item);
+              }else{
+                this.viewDate[date] = [item];
+              }
+              this.$set(this.viewDate, this.thisDay,item);
+            });
+          })
+          .catch(error=>{
+            console.error('Error fetching doctor list:', error);
+          });
+      }
+      if(this.$store.getters.roles[0]==="root"){
+        //根据用户名 获取对应科室的数据表
+        getSchedule()
+          .then(response=>{
+            response.rows.forEach(item => {
+              const date = item.date; // 假设 date 是日期字段
+              // 如果该日期已存在于 viewDate 中，则将当前数据追加到已有数据中，否则创建新的数组存储该日期的数据
+              item.sort = item.shifts === '早' ? 1 : (item.shifts === '中' ? 2 : (item.shifts === '晚' ? 3 : 0));
+              item.shiftName=item.shifts;
+              item.groupName=item.category;
+              item.startTime=item.begin;
+              item.endTime=item.end;
+              if (this.viewDate[date]) {
+                this.viewDate[date].push(item);
+              }else{
+                this.viewDate[date] = [item];
+              }
+              this.$set(this.viewDate, this.thisDay,item);
+            });
+          })
+          .catch(error=>{
+            console.error('Error fetching doctor list:', error);
+          });
+        //判断当前用于角色是否为管理员 如果是管理员则返回其科室的所有医生
+        listDoctor({ username: username })
+          .then(response => {
+            // 打印返回的数据到控制台
+            for(let i=0;i<response.total;i++){
+              this.Doctors[i]=response.rows[i].userName;
+            }
+          })
+          .catch(error => {
+            // 处理错误
+            console.error('Error fetching doctor list:', error);
+          });
+        // this.fetchDoctorList()
+      }
+    });
+
     if (!this.viewDate) {
       this.viewDate = {};
     }
-    //获取当前登录用户
     const username = this.$store.getters.name;
     if(this.$store.getters.roles[0]==="common") {
       //判断当前角色是否为普通用户 如果是则只显示个人排班
       getSchedule({ query: username })
         .then(response=>{
-          console.log(response);
           response.rows.forEach(item => {
             const date = item.date; // 假设 date 是日期字段
             // 如果该日期已存在于 viewDate 中，则将当前数据追加到已有数据中，否则创建新的数组存储该日期的数据
@@ -585,25 +642,22 @@ export default {
             item.groupName=item.category;
             item.startTime=item.begin;
             item.endTime=item.end;
-            console.log(this.viewDate);
             if (this.viewDate[date]) {
               this.viewDate[date].push(item);
             }else{
               this.viewDate[date] = [item];
             }
-            document.getElementById("day").click();
+            this.$set(this.viewDate, this.thisDay,item);
           });
         })
         .catch(error=>{
           console.error('Error fetching doctor list:', error);
         });
     }
-
     if(this.$store.getters.roles[0]==="root"){
       //根据用户名 获取对应科室的数据表
       getSchedule()
         .then(response=>{
-          console.log(response);
           response.rows.forEach(item => {
             const date = item.date; // 假设 date 是日期字段
             // 如果该日期已存在于 viewDate 中，则将当前数据追加到已有数据中，否则创建新的数组存储该日期的数据
@@ -612,13 +666,12 @@ export default {
             item.groupName=item.category;
             item.startTime=item.begin;
             item.endTime=item.end;
-            console.log(this.viewDate);
             if (this.viewDate[date]) {
               this.viewDate[date].push(item);
             }else{
               this.viewDate[date] = [item];
             }
-            document.getElementById("day").click();
+            this.$set(this.viewDate, this.thisDay,item);
           });
         })
         .catch(error=>{
@@ -638,7 +691,7 @@ export default {
         });
       // this.fetchDoctorList()
     }
-
+    //获取当前登录用户
   },
 };
 </script>
