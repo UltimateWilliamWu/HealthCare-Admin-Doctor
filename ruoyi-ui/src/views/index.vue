@@ -199,33 +199,36 @@
             <span>更新日志</span>
           </div>
           <el-collapse accordion>
-            <el-collapse-item title="v1.0.0 - 2024-4-1">
-              <li>超级管理员端</li>
+            <el-collapse-item title="v1.0.0 - 2024-4-14">
+              <li>患者端</li>
               <ol>
-                <li>实现系统管理</li>
-                <li>实现参数设置</li>
+                <li>患者预约问诊功能</li>
+                <li>患者浏览科室、医生信息</li>
+                <li>医院用户登录注册功能</li>
+              </ol>
+              <li>医院端</li>
+              <ol>
+                <li>权限管理功能</li>
+                <li>岗位管理功能</li>
+                <li>医生管理功能</li>
+                <li>部门管理功能</li>
+                <li>通知公告管理功能</li>
+                <li>日志管理功能</li>
+              </ol>
+            </el-collapse-item>
+            <el-collapse-item title="v1.0.1 - 2024-4-28">
+              <li>医院端</li>
+              <ol>
                 <li>实现菜单管理</li>
                 <li>实现字典设置</li>
                 <li>实现系统监控</li>
                 <li>实现在线用户</li>
                 <li>实现服务监控</li>
+                <li>实现缓存监控</li>
               </ol>
             </el-collapse-item>
-            <el-collapse-item title="v1.0.1 - 2024-4-15">
-              <li>管理员端</li>
-              <ol>
-                <li>实现医生的增删改查</li>
-                <li>实现科室的增删改查</li>
-                <li>实现病床的增删改查</li>
-                <li>实现药房的增删改查</li>
-                <li>实现用户权限的管理</li>
-                <li>实现用户岗位的分配</li>
-                <li>实现日志管理</li>
-                <li>实现通知公告</li>
-              </ol>
-            </el-collapse-item>
-            <el-collapse-item title="v1.0.2 - 2024-5-1">
-              <li>管理员端</li>
+            <el-collapse-item title="v1.0.2 - 2024-5-15">
+              <li>管理员医生端</li>
               <ol>
                 <li>实现手动排班</li>
                 <li>实现排班总览</li>
