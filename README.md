@@ -54,6 +54,15 @@
 
 <table>
     <tr>
-        <td></td>
+        <td>排班功能界面</td>
+        <td> <img src="showImg/img.png" alt="null"> </td>
+    </tr>
+    <tr>
+        <td>手动排班界面</td>
+        <td> <img alt="null" src="showImg/img_1.png"></td>
+    </tr>
+    <tr>
+        <td>批量排班界面</td>
+        <td> <img alt="null" src="showImg/img_2.png"></td>
     </tr>
 </table>
