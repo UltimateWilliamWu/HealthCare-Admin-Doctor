@@ -50,7 +50,7 @@ public class PhotoController extends BaseController {
             String appId = "DKoJ3BRXBarPvHcQEqvZE31k5sdmuHyT83J7vsgCJpSX";
             String sdkKey = "JALEEbXGvrJWTAXft5CSqwKuT2QdjBaSUiksXvwh4qQj";
 
-            FaceEngine faceEngine = new FaceEngine("C:\\Users\\22363\\Desktop\\ArcSoft_ArcFace_Java_Windows_x64_V3.0\\libs\\WIN64");
+            FaceEngine faceEngine = new FaceEngine("D:\\ArcSoft_ArcFace_Java_Windows_x64_V3.0\\libs\\WIN64");
             //激活引擎
             int errorCode = faceEngine.activeOnline(appId, sdkKey);
 
