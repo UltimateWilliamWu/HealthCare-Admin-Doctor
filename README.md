@@ -66,3 +66,8 @@
         <td> <img alt="null" src="showImg/img_2.png"></td>
     </tr>
 </table>
+
+## 使用指南
+### 1.数据库创建以及连接
+### 2.人脸识别SDK接入
+### 3.项目启动
