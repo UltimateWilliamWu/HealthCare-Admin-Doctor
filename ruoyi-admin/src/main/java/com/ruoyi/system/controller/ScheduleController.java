@@ -171,7 +171,7 @@ public class ScheduleController extends BaseController
     * 智能排班
      * 使用google or tools 作为辅助算法工具
      * 约束条件：
-     *  每个班次每天分配给一位护士。（硬性约束条件）
+     *  每个班次每天分配给一位护士。（硬性约束条件）hu
      *  每位护士每天最多工作一次。（硬性约束条件）
      *  尽可能均分班次（软性约束条件）
     */
@@ -187,7 +187,7 @@ public class ScheduleController extends BaseController
         Loader.loadNativeLibraries();
         final int numNurses = doctors.size();//医生列表
         final int numDays =date.size();//日期列表
-        final int numShifts = 3;//班次
+        final int numShifts = 3;//班次 早中晚三班
 
         final int[] allNurses = IntStream.range(0, numNurses).toArray();
         final int[] allDays = IntStream.range(0, numDays).toArray();
@@ -197,7 +197,7 @@ public class ScheduleController extends BaseController
         CpModel model = new CpModel();
 
         // Creates shift variables.
-        // shifts[(n, d, s)]: nurse 'n' works shift 's' on day 'd'.
+        // shifts[(n, d, s)]: 医生 'n' works 班次 's' on 日期 'd'.
         Literal[][][] shifts = new Literal[numNurses][numDays][numShifts];
         for (int n : allNurses) {
             for (int d : allDays) {
@@ -207,7 +207,7 @@ public class ScheduleController extends BaseController
             }
         }
 
-        // Each shift is assigned to exactly one nurse in the schedule period.
+        // 同一班次只能由一位医生负责.
         for (int d : allDays) {
             for (int s : allShifts) {
                 List<Literal> nurses = new ArrayList<>();
@@ -218,7 +218,7 @@ public class ScheduleController extends BaseController
             }
         }
 
-        // Each nurse works at most one shift per day.
+        // 每位医生每天只能轮一班.
         for (int n : allNurses) {
             for (int d : allDays) {
                 List<Literal> work = new ArrayList<>();
